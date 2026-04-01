@@ -152,8 +152,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const uploadDocument = async (file: File) => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const content = await file.text()
-      const result = await api.ingest([content])
+      const result = await api.uploadDocument(file)
       
       dispatch({ type: 'ADD_DOCUMENT', payload: { sessionId: state.currentSessionId, filename: file.name } })
       

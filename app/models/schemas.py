@@ -61,3 +61,9 @@ class SessionHistoryResponse(BaseModel):
 class ErrorResponse(BaseModel):
     detail: str
     error_code: Optional[str] = None
+
+
+class FileUploadRequest(BaseModel):
+    filename: str
+    content: str
+    file_type: Optional[str] = None

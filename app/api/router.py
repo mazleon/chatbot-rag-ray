@@ -1,4 +1,5 @@
 import logging
+import base64
 from fastapi import APIRouter, HTTPException, status
 from app.models.schemas import (
     ChatRequest,
@@ -7,11 +8,13 @@ from app.models.schemas import (
     SessionHistoryResponse,
     DocumentIngestRequest,
     DocumentIngestResponse,
+    FileUploadRequest,
 )
 from app.memory.manager import get_memory
 from app.core.constants import API_VERSION
 from app.api.routes import chat_endpoint
 from app.services.rag import get_rag_service
+from app.services.parser import parse_file
 
 logger = logging.getLogger(__name__)
 
@@ -82,4 +85,41 @@ async def ingest_documents(request: DocumentIngestRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Ingestion failed: {str(e)}"
+        )
+
+
+@router.post("/upload", response_model=DocumentIngestResponse)
+async def upload_document(request: FileUploadRequest):
+    try:
+        rag_service = get_rag_service()
+        if not rag_service:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="RAG service unavailable"
+            )
+        
+        file_bytes = base64.b64decode(request.content)
+        
+        text = parse_file(file_bytes, request.filename)
+        if not text:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Could not extract text from {request.filename}"
+            )
+        
+        chunks = rag_service.ingest_documents([text])
+        logger.info(f"Uploaded {request.filename}: {chunks} chunks created")
+        
+        return DocumentIngestResponse(
+            status="success",
+            chunks_created=chunks,
+            message=f"Successfully processed {request.filename}"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Upload endpoint error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Upload failed: {str(e)}"
         )

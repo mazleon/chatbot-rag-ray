@@ -78,6 +78,26 @@ export const api = {
       body: JSON.stringify({ documents }),
     })
   },
+
+  async uploadDocument(file: File) {
+    const base64Content = await new Promise<string>((resolve) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        const base64 = result.split(',')[1]
+        resolve(base64)
+      }
+      reader.readAsDataURL(file)
+    })
+
+    return request<{ status: string; chunks_created: number; message: string }>('/upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        filename: file.name,
+        content: base64Content,
+      }),
+    })
+  },
 }
 
 export { ApiError }
