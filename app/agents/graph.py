@@ -29,6 +29,7 @@ async def classify_node(state: AgentState) -> AgentState:
         "benefits": ["benefit", "payout", "receive", "coverage amount"],
         "policy_info": ["policy", "term", "coverage", "plan", "type", "insurance", "life insurance"],
         "document_query": ["my document", "my file", "uploaded", "what does it say", "according to"],
+        "summarize": ["summarize", "summary", "summarise", "recap", "what did we discuss", "review"],
     }
     
     for intent, words in keywords.items():
@@ -43,7 +44,7 @@ async def classify_node(state: AgentState) -> AgentState:
 
 
 async def retrieve_node(state: AgentState) -> AgentState:
-    should_retrieve = state.intent in ["policy_info", "benefits", "eligibility", "claims", "premium", "document_query"]
+    should_retrieve = state.intent in ["policy_info", "benefits", "eligibility", "claims", "premium", "document_query"] or state.intent == "summarize"
     
     if not should_retrieve and state.conversation_history:
         should_retrieve = True
@@ -89,13 +90,15 @@ async def generate_node(state: AgentState) -> AgentState:
     history_text = ""
     if state.conversation_history:
         history_lines = []
-        for msg in state.conversation_history[-6:]:
+        for msg in state.conversation_history:
             role_label = "User" if msg.get("role") == "user" else "Assistant"
-            content = msg.get("content", "")[:200]
+            content = msg.get("content", "")
             if content:
                 history_lines.append(f"{role_label}: {content}")
         if history_lines:
             history_text = "Previous conversation:\n" + "\n".join(history_lines) + "\n\n"
+    
+    is_summarize = state.intent == "summarize" or "summarize" in last_message or "summary" in last_message
     
     system_prompt = f"""You are a helpful life insurance support agent.
 Your role is to help users understand life insurance products, benefits, 
@@ -108,6 +111,7 @@ Guidelines:
 - Don't provide specific premium quotes (redirect to agent)
 - Always recommend professional advice for complex decisions
 - Remember relevant details from the conversation history
+{"- When asked to summarize, provide a clear and concise summary of the conversation below" if is_summarize else ""}
 
 {history_text}{'Context: ' + context if context else ''}
 
