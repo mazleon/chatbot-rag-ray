@@ -96,6 +96,7 @@ class RedisBackend(MemoryBackend):
     
     def add_message(self, session_id: str, role: str, content: str, intent: Optional[str] = None) -> None:
         if not self._redis:
+            logger.warning("Redis not available, message not saved")
             return
         
         key = self._get_key(session_id)
@@ -106,6 +107,7 @@ class RedisBackend(MemoryBackend):
     
     def get_history(self, session_id: str) -> List[Message]:
         if not self._redis:
+            logger.warning("Redis not available, returning empty history")
             return []
         
         key = self._get_key(session_id)
@@ -121,6 +123,11 @@ class RedisBackend(MemoryBackend):
         if not self._redis:
             return False
         return self._redis.exists(self._get_key(session_id)) > 0
+    
+    def session_exists(self, session_id: str) -> bool:
+        if not self._redis:
+            return False
+        return self._redis.exists(self._get_key(session_id)) > 0
 
 
 class ConversationMemory:
@@ -129,14 +136,10 @@ class ConversationMemory:
         
         if backend:
             self.backend = backend
-        elif settings.redis_url:
-            try:
-                self.backend = RedisBackend(max_turns=settings.session_max_turns)
-            except Exception as e:
-                logger.warning(f"Failed to initialize Redis: {e}")
-                self.backend = InMemoryBackend(max_turns=settings.session_max_turns)
+            logger.info(f"Using provided memory backend: {type(backend).__name__}")
         else:
             self.backend = InMemoryBackend(max_turns=settings.session_max_turns)
+            logger.info(f"Using in-memory backend")
         
         logger.info(f"Using memory backend: {type(self.backend).__name__}")
     
