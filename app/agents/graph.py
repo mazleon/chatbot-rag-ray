@@ -23,11 +23,12 @@ async def classify_node(state: AgentState) -> AgentState:
     logger.debug(f"Classifying message: {last_message[:50]}...")
     
     keywords = {
-        "claims": ["file claim", "claim", "process", "documents", "submit"],
-        "premium": ["premium", "cost", "price", "pay", "monthly", "yearly"],
-        "eligibility": ["eligible", "qualify", "who can", "can i get", "requirement"],
-        "benefits": ["benefit", "payout", "receive"],
-        "policy_info": ["policy", "term", "coverage", "plan", "type", "insurance"],
+        "claims": ["file claim", "claim", "process", "documents", "submit", "death benefit"],
+        "premium": ["premium", "cost", "price", "pay", "monthly", "yearly", "expensive", "cheap"],
+        "eligibility": ["eligible", "qualify", "who can", "can i get", "requirement", "age limit"],
+        "benefits": ["benefit", "payout", "receive", "coverage amount"],
+        "policy_info": ["policy", "term", "coverage", "plan", "type", "insurance", "life insurance"],
+        "document_query": ["my document", "my file", "uploaded", "what does it say", "according to"],
     }
     
     for intent, words in keywords.items():
@@ -42,7 +43,12 @@ async def classify_node(state: AgentState) -> AgentState:
 
 
 async def retrieve_node(state: AgentState) -> AgentState:
-    if state.intent in ["policy_info", "benefits", "eligibility", "claims", "premium"]:
+    should_retrieve = state.intent in ["policy_info", "benefits", "eligibility", "claims", "premium", "document_query"]
+    
+    if not should_retrieve and state.conversation_history:
+        should_retrieve = True
+    
+    if should_retrieve:
         from app.services.rag import get_rag_service
         rag_service = get_rag_service()
         
