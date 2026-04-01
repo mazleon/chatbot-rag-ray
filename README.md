@@ -97,18 +97,31 @@ sequenceDiagram
 
 ### Using Docker Compose (Recommended)
 
+1. Copy and configure environment:
 ```bash
-docker-compose up --build
+cp .env.docker .env
+# Edit .env with your API keys (OpenRouter and LangFuse)
+```
+
+2. Start services:
+```bash
+docker-compose --env-file .env up --build
 ```
 
 Services:
-
-- Backend: <http://localhost:8000>
-- Frontend: <http://localhost:5173>
-- API Docs: <http://localhost:8000/docs>
+- Backend: http://localhost:8000
+- Frontend: http://localhost:5173
+- API Docs: http://localhost:8000/docs
 
 ### Local Development
 
+1. Copy environment template:
+```bash
+cp .env.example .env
+# Edit .env with your API keys
+```
+
+2. Start backend and frontend:
 ```bash
 # Backend
 uv sync
