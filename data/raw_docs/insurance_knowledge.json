@@ -1,0 +1,98 @@
+{
+  "policies": [
+    {
+      "name": "Term Life Insurance",
+      "description": "Term life insurance provides coverage for a specific period (term), typically 10, 20, or 30 years. It's the most affordable type of life insurance.",
+      "benefits": [
+        "Affordable premiums",
+        "Simple and straightforward",
+        "Flexible term lengths",
+        "Can convert to permanent insurance"
+      ],
+      "eligibility": [
+        "Age between 18-80",
+        "Must pass medical exam (for most policies)",
+        "Citizenship or permanent residency"
+      ],
+      "premium_factors": [
+        "Age",
+        "Health status",
+        "Term length",
+        "Coverage amount",
+        "Smoking status"
+      ]
+    },
+    {
+      "name": "Whole Life Insurance",
+      "description": "Whole life insurance provides lifetime coverage with a cash value component that grows over time.",
+      "benefits": [
+        "Lifetime coverage",
+        "Cash value accumulation",
+        "Guaranteed death benefit",
+        "Dividend payments (potential)"
+      ],
+      "eligibility": [
+        "Age between 18-75",
+        "Must pass medical exam",
+        "Higher premium than term"
+      ],
+      "premium_factors": [
+        "Age",
+        "Health status",
+        "Coverage amount",
+        "Payment frequency"
+      ]
+    },
+    {
+      "name": "Universal Life Insurance",
+      "description": "Universal life insurance offers flexible premiums and death benefits with a cash value component.",
+      "benefits": [
+        "Flexible premiums",
+        "Adjustable death benefit",
+        "Cash value with interest",
+        "Lifetime coverage option"
+      ],
+      "eligibility": [
+        "Age between 18-80",
+        "May not require medical exam",
+        "Credit-based approval"
+      ],
+      "premium_factors": [
+        "Age",
+        "Health history",
+        "Coverage amount",
+        "Investment performance"
+      ]
+    }
+  ],
+  "claims": {
+    "process": [
+      "1. Notify the insurance company of the death",
+      "2. Submit required documentation (death certificate, policy documents)",
+      "3. Complete claim forms",
+      "4. Wait for claim processing (typically 2-4 weeks)",
+      "5. Receive death benefit"
+    ],
+    "required_documents": [
+      "Original death certificate",
+      "Policy documents",
+      "Claimant ID",
+      "Proof of relationship",
+      "Medical records (if required)"
+    ],
+    "common_reasons_for_denial": [
+      "Suicide within first 2 years",
+      "Material misrepresentation on application",
+      "Policy not in force at time of death",
+      "War or military service exclusions",
+      "Dangerous activities not disclosed"
+    ]
+  },
+  "faq": {
+    "what_is_term_life": "Term life insurance provides coverage for a specific period. If the insured dies during the term, beneficiaries receive the death benefit.",
+    "how_much_coverage": "A common rule is to get coverage equal to 10-15 times your annual income, but individual needs vary.",
+    "what_affects_premium": "Age, health status, lifestyle (smoking), occupation, coverage amount, and term length all affect premiums.",
+    "can_i_change_policy": "Many policies allow conversion from term to permanent coverage. Some allow policy upgrades.",
+    "what_is_waiting_period": "The contestability period is typically 2 years after policy issue. During this time, insurers can deny claims for misrepresentation."
+  }
+}

@@ -1,0 +1,59 @@
+[project]
+name = "ray-works"
+version = "0.1.0"
+description = "FastAPI-based AI agent system for life insurance customer support"
+readme = "README.md"
+authors = [
+    { name = "user", email = "user@example.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.3",
+    "pydantic-settings>=2.1.0",
+    "python-dotenv>=1.0.0",
+    "langgraph>=0.1.8",
+    "langchain>=0.1.4",
+    "langchain-openai>=0.0.5",
+    "langchain-community>=0.1",
+    "faiss-cpu>=1.7.4",
+    "redis>=5.0.1",
+    "python-multipart>=0.0.6",
+    "aiohttp>=3.9.1",
+    "httpx>=0.26.0",
+    "langfuse>=4.0.6",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.3",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.11",
+    "black>=23.12.1",
+    "mypy>=1.8.0",
+]
+
+[tool.uv]
+managed = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

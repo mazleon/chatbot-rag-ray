@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t backend:${{ github.ref_name }} .
+
+      - name: Build frontend image
+        run: docker build -t frontend:${{ github.ref_name }} -f frontend/Dockerfile .
+
+      - name: List images
+        run: |
+          echo "Build complete:"
+          docker images | grep -E "(backend|frontend)" || true

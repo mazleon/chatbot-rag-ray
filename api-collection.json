@@ -1,0 +1,122 @@
+{
+  "info": {
+    "name": "Life Insurance Agent API",
+    "description": "API collection for testing the Life Insurance AI Support Agent",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Chat - Term Insurance",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/chat",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"test-session-1\",\n  \"message\": \"What is term life insurance?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - Premium Info",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/chat",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"test-session-1\",\n  \"message\": \"How much does a 20-year term policy cost?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - Claims Process",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/chat",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"test-session-2\",\n  \"message\": \"How do I file a life insurance claim?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - Eligibility",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/chat",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"test-session-2\",\n  \"message\": \"Am I eligible for life insurance at age 35?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Session History",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/sessions/test-session-1/history"
+      }
+    },
+    {
+      "name": "Delete Session",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/sessions/test-session-1"
+      }
+    },
+    {
+      "name": "Ingest Documents",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/ingest",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documents\": [\n    \"Term life insurance provides coverage for a specific period, typically 10, 20, or 30 years. It pays a death benefit if the insured dies during the term.\"\n  ]\n}"
+        }
+      }
+    }
+  ]
+}
