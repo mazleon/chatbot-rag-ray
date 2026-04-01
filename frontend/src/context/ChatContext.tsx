@@ -152,9 +152,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const uploadDocument = async (file: File) => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
+      console.log('[ChatContext] Uploading document:', file.name)
       const result = await api.uploadDocument(file)
+      console.log('[ChatContext] Upload result:', result)
       
       dispatch({ type: 'ADD_DOCUMENT', payload: { sessionId: state.currentSessionId, filename: file.name } })
+      console.log('[ChatContext] Added document to session:', state.currentSessionId)
       
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
@@ -163,9 +166,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         timestamp: new Date().toISOString(),
       }
       dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage })
+      console.log('[ChatContext] Added confirmation message')
     } catch (err) {
-      console.error('Ingestion failed:', err)
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to ingest document. Please try again.' })
+      console.error('[ChatContext] Ingestion failed:', err)
+      const errorMsg = err instanceof Error ? err.message : 'Failed to ingest document'
+      dispatch({ type: 'SET_ERROR', payload: errorMsg })
+      
+      const errorMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `Failed to upload **${file.name}**: ${errorMsg}`,
+        timestamp: new Date().toISOString(),
+      }
+      dispatch({ type: 'ADD_MESSAGE', payload: errorMessage })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
