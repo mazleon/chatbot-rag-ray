@@ -27,10 +27,12 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     
     if (!response.ok) {
       let errorDetail = 'Unknown error'
-      try {
+      const contentType = response.headers.get('content-type') || ''
+      
+      if (contentType.includes('application/json')) {
         const errorData = await response.json()
         errorDetail = errorData.detail || JSON.stringify(errorData)
-      } catch {
+      } else {
         errorDetail = await response.text() || `HTTP ${response.status}`
       }
       console.error(`[API] Error response:`, errorDetail)
