@@ -1,31 +1,18 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine AS builder
 
 WORKDIR /app
-
-FROM base AS deps
 
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 
-FROM base AS builder
-
-COPY --from=deps /app/node_modules ./node_modules
 COPY frontend/ ./
-
 RUN npm run build
 
-FROM base AS runner
+FROM nginx:alpine
 
-ENV NODE_ENV=production
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 viteuser
-
-USER viteuser
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 5173
 
-CMD ["npx", "vite", "preview", "--port", "5173", "--host"]
+CMD ["nginx", "-g", "daemon off;"]
