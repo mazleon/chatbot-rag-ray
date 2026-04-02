@@ -68,18 +68,17 @@ flowchart TB
 
 ## Quick Start
 
-### Option 1: Docker Compose (Recommended)
+### Docker Compose (Recommended)
 
 ```bash
 # 1. Copy environment template
 cp .env.docker .env
 
-# 2. Edit .env with your API keys
-#    - Get OpenRouter key: https://openrouter.ai/keys
-#    - (Optional) Get LangFuse keys: https://cloud.langfuse.com
+# 2. Edit .env with your API key
+#    - Get OpenAI key: https://platform.openai.com/api-keys
 
 # 3. Start all services
-docker-compose --env-file .env up --build
+docker-compose up --build
 ```
 
 **Services:**
@@ -257,10 +256,6 @@ cd frontend && npm run lint
 - **Frontend**: React, TypeScript, Tailwind CSS, Vite
 - **Observability**: LangFuse
 - **Deployment**: Docker, Docker Compose
-
-## License
-
-MIT
 
 ## Author
 
