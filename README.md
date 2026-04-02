@@ -32,7 +32,7 @@ flowchart TB
     end
 
     subgraph External["External Services"]
-        OpenRouter[OpenRouter API]
+        LLM[LLM API]
         VectorDB[FAISS Vector Store]
         Redis[(Redis)]
     end
@@ -42,7 +42,7 @@ flowchart TB
     Agent --> Memory
     Agent --> RAG
     RAG --> VectorDB
-    Agent --> OpenRouter
+    Agent --> LLM
     Memory --> Redis
     
     classDef primary fill:#10b981,stroke:#059669,color:#fff
@@ -54,6 +54,10 @@ flowchart TB
     class Memory,RAG storage
     class OpenRouter,VectorDB,Redis external
 ```
+
+## Demo
+
+![Frontend Demo](docs/snapshot_ofproject.png)
 
 ## Features
 
