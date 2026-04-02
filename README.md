@@ -57,7 +57,7 @@ flowchart TB
 
 ## Demo
 
-<video src="https://github.com/mazleon/chatbot-rag-ray/raw/refs/heads/main/docs/Demo_Of_Conversation.mp4" controls width="800">Demo Video</video>
+<video src="https://github.com/mazleon/chatbot-rag-ray/blob/main/docs/Demo_Of_Conversation.mp4?raw=1" controls width="800">Demo Video</video>
 
 ## Features
 
