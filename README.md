@@ -2,6 +2,14 @@
 
 FastAPI-based AI agent system for life insurance customer support with RAG (Retrieval-Augmented Generation).
 
+## Documentation
+
+For comprehensive documentation, see the `docs/` folder:
+
+- **[Quick Start](docs/QUICKSTART.md)** - Get running in 5 minutes
+- **[API Reference](docs/API.md)** - Detailed API endpoints
+- **[Technical Documentation](docs/TECHNICAL.md)** - Architecture, diagrams, and deep-dives
+
 ## Architecture
 
 ```mermaid
@@ -100,13 +108,14 @@ npm run dev
 ### Required
 | Variable | Description | Get from |
 |----------|-------------|----------|
-| `OPENROUTER_API_KEY` | OpenAI/OpenRouter API key | https://openrouter.ai/keys |
-| `OPENROUTER_MODEL` | Model to use (default: `openai/gpt-4o-mini`) | OpenRouter models |
+| `OPENAI_API_KEY` | OpenAI API key | https://platform.openai.com/api-keys |
 
 ### Optional
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OPENROUTER_MODEL` | `openai/gpt-4o-mini` | LLM model |
+| `OPENAI_MODEL` | `gpt-4o-mini` | LLM model |
+| `LLM_PROVIDER` | `openai` | LLM provider (openai/openrouter) |
+| `EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding model for RAG |
 | `LANGFUSE_ENABLED` | `false` | Enable LangFuse tracing |
 | `LANGFUSE_SECRET_KEY` | - | LangFuse secret key |
 | `LANGFUSE_PUBLIC_KEY` | - | LangFuse public key |
@@ -223,17 +232,22 @@ cd frontend && npm run lint
 
 ## Troubleshooting
 
-### "Missing Authentication header"
-- Your `OPENROUTER_API_KEY` is not set correctly in `.env.docker`
+### "Missing API Key"
+- Your `OPENAI_API_KEY` is not set correctly in `.env`
 - Make sure to copy `.env.docker` to `.env` and add your real key
+- Get key from: https://platform.openai.com/api-keys
 
-### "User not found"
+### "Invalid API key"
 - Your API key is invalid or expired
-- Get a new key from https://openrouter.ai/keys
+- Get a new key from https://platform.openai.com/api-keys
 
 ### Frontend not connecting
 - Wait for backend to be healthy (check `docker-compose logs`)
 - The backend healthcheck must pass before frontend starts
+
+### RAG Not Working
+- Make sure you've uploaded documents first
+- Check that the vectorstore is being created in `./vectorstore/`
 
 ## Built With
 
