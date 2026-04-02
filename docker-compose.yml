@@ -7,12 +7,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    env_file:
-      - .env.docker
     environment:
-      - APP_ENV=${APP_ENV:-development}
-      - DEBUG=${DEBUG:-true}
+      - APP_ENV=development
+      - DEBUG=true
+      - LLM_PROVIDER=openai
+      - VECTORSTORE_PATH=./vectorstore
+      - EMBEDDING_MODEL=text-embedding-3-small
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
     volumes:
+      - ./app:/app/app
       - ./data:/app/data
       - ./vectorstore:/app/vectorstore
     restart: unless-stopped

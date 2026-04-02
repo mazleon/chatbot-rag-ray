@@ -25,7 +25,7 @@ class RAGService:
         )
         
         # Use the correct API key based on provider
-        api_key = settings.openrouter_api_key or settings.openai_api_key
+        api_key = settings.openai_api_key
         base_url = settings.openrouter_base_url if settings.llm_provider == "openrouter" else None
         
         logger.info(f"Embedding model: {settings.embedding_model}")
@@ -126,4 +126,14 @@ def get_rag_service() -> Optional[RAGService]:
         except Exception as e:
             logger.error(f"Failed to initialize RAG service: {e}", exc_info=True)
             _rag_service = None
+    
+    if _rag_service is not None and _rag_service.vectorstore is None:
+        import os
+        if os.path.exists(_rag_service.vectorstore_path):
+            try:
+                _rag_service._load_vectorstore()
+                logger.info("Reloaded vector store after initial load failure")
+            except Exception as e:
+                logger.error(f"Failed to reload vector store: {e}")
+    
     return _rag_service
