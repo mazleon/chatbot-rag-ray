@@ -47,83 +47,45 @@ flowchart TB
     class OpenRouter,VectorDB,Redis external
 ```
 
-## Agent Workflow
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as API
-    participant G as LangGraph
-    participant C as Classifier
-    participant R as RAG
-    participant L as LLM
-    participant M as Memory
-
-    U->>A: POST /api/v1/chat
-    A->>M: Save user message
-    A->>G: Invoke agent
-    
-    rect rgb(240, 252, 245)
-        Note over G: Classify Intent
-        G->>C: Extract keywords
-        C->>G: intent: policy_info
-    end
-    
-    rect rgb(240, 248, 255)
-        Note over G: Retrieve Context
-        G->>R: Query vector store
-        R->>G: docs with scores
-    end
-    
-    rect rgb(255, 248, 240)
-        Note over G: Generate Response
-        G->>L: Prompt + context
-        L->>G: response text
-    end
-    
-    G->>M: Save assistant message
-    A-->>U: ChatResponse
-```
-
 ## Features
 
-- **Intent Classification**: Classifies user intent using LLM
-- **RAG**: Retrieves relevant documents from vector store
-- **Session Management**: Manages chat history and sessions
-- **API**: FastAPI-based API with Swagger documentation
-- **Docker**: Dockerized application with Docker Compose
+- **🤖 AI Agent**: LangGraph-based multi-step agent with intent classification
+- **📚 RAG System**: FAISS vector store for document retrieval
+- **💬 Conversational Memory**: Remembers conversation context and user info
+- **📄 Document Upload**: Upload PDF, DOCX, TXT files to knowledge base
+- **🔍 Smart Search**: Retrieves relevant documents based on queries
+- **📊 Observability**: LangFuse integration for LLM tracing
+- **🐳 Docker**: Full-stack Docker deployment
+- **⚡ FastAPI**: High-performance async API
 
 ## Quick Start
 
-### Using Docker Compose (Recommended)
+### Option 1: Docker Compose (Recommended)
 
-1. Copy and configure environment:
 ```bash
+# 1. Copy environment template
 cp .env.docker .env
-# Edit .env with your API keys (OpenRouter and LangFuse)
-```
 
-2. Start services:
-```bash
+# 2. Edit .env with your API keys
+#    - Get OpenRouter key: https://openrouter.ai/keys
+#    - (Optional) Get LangFuse keys: https://cloud.langfuse.com
+
+# 3. Start all services
 docker-compose --env-file .env up --build
 ```
 
-Services:
+**Services:**
 - Backend: http://localhost:8000
 - Frontend: http://localhost:5173
 - API Docs: http://localhost:8000/docs
+- Redis: http://localhost:6379
 
-### Local Development
+### Option 2: Local Development
 
-1. Copy environment template:
-```bash
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-2. Start backend and frontend:
 ```bash
 # Backend
+cp .env.example .env
+# Edit .env with your API keys
 uv sync
 uv run uvicorn main:app --reload
 
@@ -133,50 +95,90 @@ npm install
 npm run dev
 ```
 
-## Configuration
+## Environment Variables
 
-Create a `.env` file:
+### Required
+| Variable | Description | Get from |
+|----------|-------------|----------|
+| `OPENROUTER_API_KEY` | OpenAI/OpenRouter API key | https://openrouter.ai/keys |
+| `OPENROUTER_MODEL` | Model to use (default: `openai/gpt-4o-mini`) | OpenRouter models |
 
-```bash
-LLM_PROVIDER=openrouter
-OPENROUTER_API_KEY=sk-or-v1-********************************
-OPENROUTER_MODEL=google/gemini-flash-1.5-8b
-VECTORSTORE_PATH=./vectorstore
-TOP_K_RETRIEVAL=5
-```
+### Optional
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENROUTER_MODEL` | `openai/gpt-4o-mini` | LLM model |
+| `LANGFUSE_ENABLED` | `false` | Enable LangFuse tracing |
+| `LANGFUSE_SECRET_KEY` | - | LangFuse secret key |
+| `LANGFUSE_PUBLIC_KEY` | - | LangFuse public key |
 
 ## API Endpoints
 
 ### Health Check
-
 ```bash
 GET /api/v1/health
 ```
 
 ### Chat
-
 ```bash
 POST /api/v1/chat
-
-# Request
-{"session_id": "user123", "message": "What is term life insurance?"}
-
-# Response
-{"session_id": "user123", "message": "Term life insurance is...", "intent": "policy_info", "sources": [...]}
+{
+  "session_id": "user123",
+  "message": "What is term life insurance?"
+}
 ```
 
-### Session Management
+### Upload Document
+```bash
+POST /api/v1/upload
+{
+  "filename": "policy.pdf",
+  "content": "base64_encoded_file_content"
+}
+```
 
+### Session History
 ```bash
 GET /api/v1/sessions/{session_id}/history
 DELETE /api/v1/sessions/{session_id}
 ```
 
-### Document Ingestion
+## Usage Guide
+
+### 1. Ask Questions
+Simply type your life insurance questions in the chat interface.
+
+### 2. Upload Documents
+Click the "Upload Documents" button in the sidebar to add PDF, DOCX, or TXT files to the knowledge base.
+
+### 3. Ask About Uploaded Documents
+Questions like "What does my document say about..." will use RAG to find relevant content.
+
+### 4. Conversation Context
+The agent remembers:
+- Previous conversation history
+- Your name (if you share it)
+
+### 5. Summarize
+Ask "summarize our conversation" to get a summary.
+
+## Docker Commands
 
 ```bash
-POST /api/v1/ingest
-{"documents": ["Document text..."]}
+# Start services
+docker-compose --env-file .env up --build
+
+# Run in background
+docker-compose --env-file .env up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild after code changes
+docker-compose --env-file .env build
+docker-compose --env-file .env up -d
 ```
 
 ## Project Structure
@@ -186,28 +188,32 @@ ray-works/
 ├── app/
 │   ├── api/              # FastAPI endpoints
 │   ├── agents/           # LangGraph workflow
-│   ├── services/        # RAG, LLM services
+│   ├── services/         # RAG, LLM, Parser services
 │   ├── memory/           # Session management
-│   ├── models/          # Pydantic schemas
-│   └── core/            # Config, logging
+│   ├── models/           # Pydantic schemas
+│   └── core/             # Config, logging
 ├── frontend/
-│   ├── src/components/  # React components
-│   ├── context/         # Chat state
-│   └── services/        # API layer
-├── data/raw_docs/       # Insurance knowledge
-├── tests/               # Backend tests
-├── Dockerfile           # Backend image
-├── docker-compose.yml   # Full stack
-└── .env                 # Environment
+│   ├── src/
+│   │   ├── components/   # React components
+│   │   ├── context/     # Chat state management
+│   │   ├── services/    # API layer
+│   │   └── types/       # TypeScript types
+│   └── vite.config.ts   # Vite configuration
+├── data/raw_docs/        # Insurance knowledge base
+├── tests/                # Backend tests
+├── Dockerfile             # Backend image
+├── frontend/Dockerfile   # Frontend image
+├── docker-compose.yml     # Full stack
+└── .env.docker           # Docker env template
 ```
 
 ## Testing
 
 ```bash
-# Backend
+# Backend tests
 pytest
 
-# Frontend
+# Frontend tests
 cd frontend && npm test
 
 # Lint
@@ -215,17 +221,35 @@ ruff check .
 cd frontend && npm run lint
 ```
 
-## Docker Commands
+## Troubleshooting
 
-```bash
-docker-compose up -d        # Start services
-docker-compose logs -f      # View logs
-docker-compose down         # Stop services
-```
+### "Missing Authentication header"
+- Your `OPENROUTER_API_KEY` is not set correctly in `.env.docker`
+- Make sure to copy `.env.docker` to `.env` and add your real key
 
-## Developed By
+### "User not found"
+- Your API key is invalid or expired
+- Get a new key from https://openrouter.ai/keys
 
-Mazharul Islam Leon
-Github: <https://github.com/mazleon>
-<b>
-Website: <https://mazleon.com>
+### Frontend not connecting
+- Wait for backend to be healthy (check `docker-compose logs`)
+- The backend healthcheck must pass before frontend starts
+
+## Built With
+
+- **Backend**: FastAPI, LangGraph, LangChain
+- **LLM**: OpenRouter (OpenAI, Anthropic, Google models)
+- **Vector Store**: FAISS
+- **Frontend**: React, TypeScript, Tailwind CSS, Vite
+- **Observability**: LangFuse
+- **Deployment**: Docker, Docker Compose
+
+## License
+
+MIT
+
+## Author
+
+**Mazharul Islam Leon**
+- GitHub: https://github.com/mazleon
+- Website: https://mazleon.com
