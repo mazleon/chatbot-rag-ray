@@ -59,7 +59,7 @@ flowchart TB
 
 ![Frontend Demo](docs/snapshot_ofproject.png)
 
-https://github.com/mazleon/chatbot-rag-ray/blob/main/docs/Demo_Of_Conversation.mp4
+<video src="https://github.com/mazleon/chatbot-rag-ray/raw/refs/heads/main/docs/Demo_Of_Conversation.mp4" controls width="800">Demo Video</video>
 
 ## Features
 
