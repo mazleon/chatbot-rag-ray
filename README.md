@@ -52,12 +52,14 @@ flowchart TB
     
     class Router,Agent primary
     class Memory,RAG storage
-    class OpenRouter,VectorDB,Redis external
+    class LLM,VectorDB,Redis external
 ```
 
 ## Demo
 
 ![Frontend Demo](docs/snapshot_ofproject.png)
+
+https://github.com/mazleon/chatbot-rag-ray/blob/main/docs/Demo_Of_Conversation.mp4
 
 ## Features
 
